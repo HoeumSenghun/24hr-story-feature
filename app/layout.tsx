@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Story Feature",
-  description: "24hr Story Feature for Next.js 16",
-};
+  title: '24hr Story Feature',
+  description: 'Client side Instagram style stories that expire after 24 hours',
+}
 
 export default function RootLayout({
   children,

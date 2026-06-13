@@ -1,0 +1,8 @@
+export const STORIES_STORAGE_KEY = 'stories-feature-data'
+export const STORY_TTL_MS = 24 * 60 * 60 * 1000
+export const MAX_IMAGE_WIDTH = 1080
+export const MAX_IMAGE_HEIGHT = 1920
+export const MAX_UPLOAD_FILE_BYTES = 10 * 1024 * 1024
+export const MAX_STORIES = 50
+export const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'] as const
+export const SWIPE_THRESHOLD_PX = 50
