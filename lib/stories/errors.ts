@@ -5,6 +5,7 @@ export type StoryErrorCode =
   | 'STORY_LIMIT_REACHED'
   | 'STORAGE_FAILED'
   | 'PROCESSING_FAILED'
+  | 'STORY_NOT_FOUND'
 
 export class StoryError extends Error {
   readonly code: StoryErrorCode

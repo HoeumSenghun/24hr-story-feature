@@ -3,6 +3,7 @@
 import { useCallback } from 'react'
 import { StoryImage } from './story-image'
 import { StoryProgress } from './story-progress'
+import { StoryReactions } from './story-reactions'
 import { useStoryViewer } from '@/hooks/use-story-viewer'
 import { useSwipeGesture } from '@/hooks/use-swipe-gesture'
 import type { Story } from '@/lib/stories'
@@ -11,9 +12,15 @@ type StoryViewerProps = {
   stories: Story[]
   initialIndex: number
   onClose: () => void
+  onReact: (storyId: string, emoji: string) => void
 }
 
-export function StoryViewer({ stories, initialIndex, onClose }: StoryViewerProps) {
+export function StoryViewer({
+  stories,
+  initialIndex,
+  onClose,
+  onReact,
+}: StoryViewerProps) {
   const { currentIndex, goNext, goPrev, handleKeyDown, canGoPrev } = useStoryViewer({
     totalStories: stories.length,
     initialIndex,
@@ -103,6 +110,12 @@ export function StoryViewer({ stories, initialIndex, onClose }: StoryViewerProps
           className="absolute inset-y-0 right-0 w-1/3"
         />
       </div>
+
+      <StoryReactions
+        storyId={currentStory.id}
+        reactions={currentStory.reactions}
+        onReact={onReact}
+      />
 
       <p className="absolute bottom-6 text-sm text-white/60">
         {currentIndex + 1} / {stories.length} · Swipe or tap sides to navigate

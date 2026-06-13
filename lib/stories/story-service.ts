@@ -1,4 +1,5 @@
-import { MAX_STORIES, STORY_TTL_MS } from './constants'
+import { MAX_REACTIONS_PER_STORY, MAX_STORIES, STORY_TTL_MS } from './constants'
+import { isRenderableEmoji } from './emoji-utils'
 import { StoryError } from './errors'
 import { isStoryExpired, isValidImageDataUrl } from './validators'
 import { storyRepository } from './repository'
@@ -46,6 +47,41 @@ export const storyService = {
     storyRepository.write([...activeStories, story])
 
     return story
+  },
+
+  addReaction(storyId: string, emoji: string): Story {
+    if (!isRenderableEmoji(emoji)) {
+      throw new StoryError('INVALID_IMAGE', 'Invalid emoji reaction')
+    }
+
+    const activeStories = persistActiveStories(storyRepository.read())
+    const storyIndex = activeStories.findIndex((story) => story.id === storyId)
+
+    if (storyIndex === -1) {
+      throw new StoryError('STORY_NOT_FOUND', 'Story not found')
+    }
+
+    const story = activeStories[storyIndex]
+    const reactions = { ...story.reactions }
+
+    if (!reactions[emoji] && Object.keys(reactions).length >= MAX_REACTIONS_PER_STORY) {
+      throw new StoryError(
+        'STORY_LIMIT_REACHED',
+        `You can only add ${MAX_REACTIONS_PER_STORY} different reactions per story`,
+      )
+    }
+
+    reactions[emoji] = (reactions[emoji] ?? 0) + 1
+
+    const updatedStory: Story = {
+      ...story,
+      reactions,
+    }
+
+    activeStories[storyIndex] = updatedStory
+    storyRepository.write(activeStories)
+
+    return updatedStory
   },
 
   getRemainingMs(createdAt: number) {

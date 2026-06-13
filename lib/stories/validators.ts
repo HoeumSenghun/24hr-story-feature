@@ -1,10 +1,12 @@
 import {
   ALLOWED_IMAGE_TYPES,
+  MAX_REACTIONS_PER_STORY,
   MAX_UPLOAD_FILE_BYTES,
   STORY_TTL_MS,
 } from './constants'
+import { isRenderableEmoji } from './emoji-utils'
 import { StoryError } from './errors'
-import type { Story } from './types'
+import type { Story, StoryReactions } from './types'
 
 const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -24,6 +26,32 @@ export function isValidImageDataUrl(value: string) {
   return IMAGE_DATA_URL_PATTERN.test(value)
 }
 
+function isValidReactions(value: unknown): value is StoryReactions {
+  if (value === undefined) {
+    return true
+  }
+
+  if (!value || typeof value !== 'object') {
+    return false
+  }
+
+  const entries = Object.entries(value)
+
+  if (entries.length > MAX_REACTIONS_PER_STORY) {
+    return false
+  }
+
+  return entries.every(([emoji, count]) => {
+    return (
+      isRenderableEmoji(emoji) &&
+      typeof count === 'number' &&
+      Number.isInteger(count) &&
+      count > 0 &&
+      count <= 9999
+    )
+  })
+}
+
 export function isValidStoryRecord(value: unknown): value is Story {
   if (!value || typeof value !== 'object') {
     return false
@@ -38,7 +66,8 @@ export function isValidStoryRecord(value: unknown): value is Story {
     isValidImageDataUrl(record.imageData) &&
     typeof record.createdAt === 'number' &&
     Number.isFinite(record.createdAt) &&
-    record.createdAt > 0
+    record.createdAt > 0 &&
+    isValidReactions(record.reactions)
   )
 }
 
