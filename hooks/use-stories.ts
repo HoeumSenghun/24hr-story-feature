@@ -12,9 +12,14 @@ export function useStories() {
     storiesStore.addStory(imageData)
   }, [])
 
+  const addReaction = useCallback((storyId: string, emoji: string) => {
+    storiesStore.addReaction(storyId, emoji)
+  }, [])
+
   return {
     stories,
     addStory,
+    addReaction,
     refresh: storiesStore.refresh,
   }
 }

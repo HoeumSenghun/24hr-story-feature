@@ -88,4 +88,9 @@ export const storiesStore = {
     storyService.create(imageData)
     refresh()
   },
+
+  addReaction(storyId: string, emoji: string) {
+    storyService.addReaction(storyId, emoji)
+    refresh()
+  },
 }

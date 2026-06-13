@@ -8,7 +8,7 @@ import { useStories } from '@/hooks/use-stories'
 import { MAX_STORIES } from '@/lib/stories'
 
 export function StoriesFeature() {
-  const { stories, addStory } = useStories()
+  const { stories, addStory, addReaction } = useStories()
   const [viewerIndex, setViewerIndex] = useState<number | null>(null)
 
   const isAtStoryLimit = stories.length >= MAX_STORIES
@@ -43,6 +43,7 @@ export function StoriesFeature() {
           stories={stories}
           initialIndex={viewerIndex}
           onClose={() => setViewerIndex(null)}
+          onReact={addReaction}
         />
       )}
     </section>
