@@ -5,6 +5,7 @@ import type { Story } from './types'
 type Listener = () => void
 
 const listeners = new Set<Listener>()
+const SERVER_SNAPSHOT: Story[] = []
 let snapshot: Story[] = []
 let expiryTimer: ReturnType<typeof setTimeout> | null = null
 let isInitialized = false
@@ -78,7 +79,7 @@ export const storiesStore = {
   },
 
   getServerSnapshot() {
-    return [] as Story[]
+    return SERVER_SNAPSHOT
   },
 
   refresh,
